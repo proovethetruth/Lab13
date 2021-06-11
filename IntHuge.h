@@ -39,6 +39,17 @@ public:
     //void operator=(const IntHuge& f);
 
     IntHuge operator+ (const IntHuge& b) const;
+    IntHuge operator* (const int a) const;
+
+    int operator==(const IntHuge& b) const;
+    int operator<(const IntHuge& v) const;
+    friend int operator !=(const IntHuge& a, const IntHuge& b);
+    friend int operator <=(const IntHuge& a, const IntHuge& b);
+    friend int operator >(const IntHuge& a, const IntHuge& b);
+    friend int operator >=(const IntHuge& a, const IntHuge& b);
+
+    const IntHuge operator -() const;
+    const IntHuge operator +() const;
 };
 
 #endif

@@ -62,7 +62,10 @@ int IntHuge::get_sign() const
 
 void IntHuge::set_sign(int a)
 {
-    sign = a;
+    if (a < 0)
+        sign = -1;
+    else
+        sign = 1;
 }
 
 int IntHuge::get_num(int i, int& error) const
@@ -96,17 +99,32 @@ std::istream& operator>>(std::istream& s, IntHuge& c)
     char a = s.get();
 
     if (a == '-')
-        c.sign = 1;
+        c.sign = -1;
     else
     {
-        c.sign = 0;
-        c.numbers[c.size-1] = a - '0';
+        c.sign = 1;
+        c.numbers[i] = a - '0';
         i--;
     }
-
-    for(; (a = s.get()) && i >= 0; i--)
-        c.numbers[i] = a -'0';
-
+    for (; i >= 0 && (a = s.get()); i--)
+    {
+        if (a == '\n')
+            a = s.get();
+        while (a - '0' < 0)
+        {
+            s.clear();
+            s.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << " Incorrect Input.\n Try again, using positive integer numbers: ";
+            if (c.sign == -1)
+                std::cout << "-";
+            for (int j = c.size - 1; j > i; j--)
+                std::cout << c.numbers[j];
+            a = s.get();
+        }
+        c.numbers[i] = a - '0';
+    }
+        
+    
     s.clear();
     s.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return s;
@@ -115,7 +133,7 @@ std::istream& operator>>(std::istream& s, IntHuge& c)
 std::ostream& operator<<(std::ostream& s, const IntHuge& c) {
     if (c.numbers)
     {
-        if (c.sign == 1)
+        if (c.sign == -1)
             s << "-";
         for (int i = c.size - 1; i >= 0; i--)
             s << c.numbers[i];
@@ -139,27 +157,95 @@ void IntHuge::expand(int length) {
     }
 }
 
-IntHuge IntHuge::operator+ (const IntHuge& b) const
-{
-    int length = 0, error = 0;
+//IntHuge IntHuge::operator+ (const IntHuge& b) const
+//{
+//    int length = 0, error = 0;
+//
+//    if (size > b.size)
+//        length = size + 1;
+//    else
+//        length = b.size + 1;
+//    
+//    IntHuge res(b, error);
+//    res.expand(length);
+//    
+//    if (sign == 1 && b.sign == 1)
+//        res.sign = 1;
+//    if (sign == 1 || b.sign == 1)
+//    {
+//
+//    }
+//
+//    for (int i = 0; i < length; i++)
+//    {
+//        res.numbers[i] += numbers[i]; // суммируем последние разряды чисел
+//        res.numbers[i + 1] += (res.numbers[i] / 10); // если есть разряд для переноса, переносим его в следующий разряд
+//        res.numbers[i] %= 10; // если есть разряд для переноса он отсекается
+//    }
+//
+//    //if (res.numbers[length - 1] == 0)
+//    //    res.size--;
+//    std::cout << res;
+//    return res;
+//}
 
-    if (size > b.size)
-        length = size + 1;
+int IntHuge::operator==(const IntHuge& b) const {
+    if ((size != b.size) || (sign != b.sign))
+        return 0;
     else
-        length = b.size + 1;
-    
-    IntHuge res(b, error);
-    res.expand(length);
-
-    for (int i = 0; i < length; i++)
     {
-        res.numbers[i] += numbers[i]; // суммируем последние разряды чисел
-        res.numbers[i + 1] += (res.numbers[i] / 10); // если есть разряд для переноса, переносим его в следующий разряд
-        res.numbers[i] %= 10; // если есть разряд для переноса он отсекается
+        for (int i = 0; i < size; i++)
+        {
+            if(numbers[i] != b.numbers[i])
+                return 0;
+        }
     }
+    return 1;
+}
 
-    //if (res.numbers[length - 1] == 0)
-    //    res.size--;
-    std::cout << res;
-    return res;
+int IntHuge::operator<(const IntHuge& b) const {
+    if (*this == b) return 0;
+    if (sign == -1) {
+        if (b.sign == -1) return ((-b) < (-*this));
+        else return 1;
+    }
+    else if (b.sign == -1) return false;
+    else {
+        if (size != b.size) {
+            return size < b.size;
+        }
+        else {
+            for (long long i = size - 1; i >= 0; --i) {
+                if (numbers[i] != b.numbers[i]) return numbers[i] < b.numbers[i];
+            }
+            return false;
+        }
+    }
+}
+
+const IntHuge IntHuge::operator -() const {
+    IntHuge copy(*this);
+    if (copy.sign == 1) copy.sign = -1;
+    else copy.sign = 1;
+    return copy;
+}
+
+const IntHuge IntHuge::operator +() const {
+    return IntHuge(*this);
+}
+
+int operator !=(const IntHuge& a, const IntHuge& b) {
+    return !(a == b);
+}
+
+int operator <=(const IntHuge& a, const IntHuge& b) {
+    return (a < b || a == b);
+}
+
+int operator >(const IntHuge& a, const IntHuge& b) {
+    return !(a <= b);
+}
+
+int operator >=(const IntHuge& a, const IntHuge& b) {
+    return !(a < b);
 }
