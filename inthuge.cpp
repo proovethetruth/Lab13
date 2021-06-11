@@ -88,11 +88,6 @@ void IntHuge::set_num(int num, int i, int& error) {
     numbers[i] = num;
 }
 
-// Шаг 1. Считать строку
-// Шаг 2. Посчитать её длину, выделить место
-// Шаг 3. С помощью my_atoi(char*, int*) распарсить строку
-// Шаг 4. Установить указатель туда, куда надо
-// -89235
 std::istream& operator>>(std::istream& s, IntHuge& c)
 {
     int i = c.size - 1;
@@ -123,8 +118,8 @@ std::istream& operator>>(std::istream& s, IntHuge& c)
         }
         c.numbers[i] = a - '0';
     }
-        
-    
+
+
     s.clear();
     s.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return s;
@@ -141,40 +136,47 @@ std::ostream& operator<<(std::ostream& s, const IntHuge& c) {
     return s;
 }
 
-void IntHuge::expand(int length) {
-    int* tmp = (int*)calloc(length, sizeof(double) * length);
-    if (!tmp)
-        return;
-
-    if (numbers != NULL) {
-        for (int i = 0; i < size; i++)
-        {
-            tmp[i] = numbers[i];
-        }
-        free(numbers);
-        numbers = tmp;
-        return;
-    }
+IntHuge& IntHuge::operator= (const IntHuge& b) {
+    ;
 }
 
-IntHuge IntHuge::operator+(const IntHuge& b) const {
-    // мы напишем лишь сложение двух положительных чисел
-    // остальное мы выведем, используя смену знака и вычитание
-    if (sign == -1) {
-        if (b.sign == -1) return -(-(*this) + (-b));
-        else return b - (-(*this));
-    }
-    else if (right._is_negative) return left - (-right);
-    int carry = 0; // флаг переноса из предыдущего разряда
-    for (size_t i = 0; i < std::max(left._digits.size(), right._digits.size()) || carry != 0; ++i) {
-        if (i == left._digits.size()) left._digits.push_back(0);
-        left._digits[i] += carry + (i < right._digits.size() ? right._digits[i] : 0);
-        carry = left._digits[i] >= big_integer::BASE;
-        if (carry != 0) left._digits[i] -= big_integer::BASE;
-    }
+//IntHuge IntHuge::operator+ (const IntHuge& b) const {
+//    IntHuge res(*this);
+//
+//    if (res.sign == -1) {
+//        if (b.sign == -1) return -(-res + (-b));
+//        else return b - (-res);
+//    }
+//    else if (b.sign == -1) return res - (-b);
+//    int carry = 0; // флаг переноса из предыдущего разряда
+//    for (size_t i = 0; i < std::max(res.size, b.size) || carry != 0; ++i) {
+//        if (i == res.size) res.set_num(res.size - 1);
+//        left._digits[i] += carry + (i < right._digits.size() ? right._digits[i] : 0);
+//        carry = left._digits[i] >= big_integer::BASE;
+//        if (carry != 0) left._digits[i] -= big_integer::BASE;
+//    }
+//
+//    return left;
+//}
+//
+//IntHuge IntHuge::operator- (const IntHuge& b) {
+//    IntHuge res(*this);
+//    if (b.sign == -1) return res + (-b);
+//    else if (res.sign == -1) return -(-res + b);
+//    else if (res < b) return -(b - res);
+//    int carry = 0;
+//    for (size_t i = 0; i < b.size || carry != 0; ++i) {
+//        res.numbers[i] -= carry + (i < b.size ? b.numbers[i] : 0);
+//        carry = b.numbers[i] < 0;
+//        if (carry != 0) res.numbers[i] += IntHuge::BASE;
+//    }
+//
+//    res._remove_leading_zeros();
+//    return left;
+//}
 
-    return left;
-}
+/*------------------------------------------------------------------*/
+
 
 int IntHuge::operator==(const IntHuge& b) const {
     if ((size != b.size) || (sign != b.sign))
@@ -183,11 +185,19 @@ int IntHuge::operator==(const IntHuge& b) const {
     {
         for (int i = 0; i < size; i++)
         {
-            if(numbers[i] != b.numbers[i])
+            if (numbers[i] != b.numbers[i])
                 return 0;
         }
     }
     return 1;
+}
+
+int operator !=(const IntHuge& a, const IntHuge& b) {
+    return !(a == b);
+}
+
+int operator >(const IntHuge& a, const IntHuge& b) {
+    return !(a <= b);
 }
 
 int IntHuge::operator<(const IntHuge& b) const {
@@ -210,6 +220,14 @@ int IntHuge::operator<(const IntHuge& b) const {
     }
 }
 
+int operator >=(const IntHuge& a, const IntHuge& b) {
+    return !(a < b);
+}
+
+int operator <=(const IntHuge& a, const IntHuge& b) {
+    return (a < b || a == b);
+}
+
 const IntHuge IntHuge::operator -() const {
     IntHuge copy(*this);
     if (copy.sign == 1) copy.sign = -1;
@@ -219,20 +237,4 @@ const IntHuge IntHuge::operator -() const {
 
 const IntHuge IntHuge::operator +() const {
     return IntHuge(*this);
-}
-
-int operator !=(const IntHuge& a, const IntHuge& b) {
-    return !(a == b);
-}
-
-int operator <=(const IntHuge& a, const IntHuge& b) {
-    return (a < b || a == b);
-}
-
-int operator >(const IntHuge& a, const IntHuge& b) {
-    return !(a <= b);
-}
-
-int operator >=(const IntHuge& a, const IntHuge& b) {
-    return !(a < b);
 }

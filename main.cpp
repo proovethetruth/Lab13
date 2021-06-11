@@ -21,7 +21,7 @@ int main() {
 
 	std::cout << "\n  Math Operators:  ";
 	std::cout << "\n  A + B = ";
-	std::cout << (A + B);
+	// std::cout << (A + B);
 
 
 	std::cout << "\n\n/------------------------------------/";
