@@ -17,6 +17,11 @@ int main() {
 	std::cout << " B = ";
 	std::cout << B;
 
+	std::cout << "\n\n/------------------------------------/";
+
+	std::cout << "\n  Math Operators:  ";
+	std::cout << "\n  A + B = ";
+	std::cout << (A + B);
 
 
 	std::cout << "\n\n/------------------------------------/";

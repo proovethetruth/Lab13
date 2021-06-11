@@ -38,7 +38,7 @@ public:
     //IntHuge operator*(double p) const;
     //void operator=(const IntHuge& f);
 
-    IntHuge operator+ (const IntHuge& b) const;
+    IntHuge operator+(const IntHuge& b) const;
     IntHuge operator* (const int a) const;
 
     int operator==(const IntHuge& b) const;

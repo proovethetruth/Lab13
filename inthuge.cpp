@@ -157,37 +157,24 @@ void IntHuge::expand(int length) {
     }
 }
 
-//IntHuge IntHuge::operator+ (const IntHuge& b) const
-//{
-//    int length = 0, error = 0;
-//
-//    if (size > b.size)
-//        length = size + 1;
-//    else
-//        length = b.size + 1;
-//    
-//    IntHuge res(b, error);
-//    res.expand(length);
-//    
-//    if (sign == 1 && b.sign == 1)
-//        res.sign = 1;
-//    if (sign == 1 || b.sign == 1)
-//    {
-//
-//    }
-//
-//    for (int i = 0; i < length; i++)
-//    {
-//        res.numbers[i] += numbers[i]; // суммируем последние разряды чисел
-//        res.numbers[i + 1] += (res.numbers[i] / 10); // если есть разряд для переноса, переносим его в следующий разряд
-//        res.numbers[i] %= 10; // если есть разряд для переноса он отсекается
-//    }
-//
-//    //if (res.numbers[length - 1] == 0)
-//    //    res.size--;
-//    std::cout << res;
-//    return res;
-//}
+IntHuge IntHuge::operator+(const IntHuge& b) const {
+    // мы напишем лишь сложение двух положительных чисел
+    // остальное мы выведем, используя смену знака и вычитание
+    if (sign == -1) {
+        if (b.sign == -1) return -(-(*this) + (-b));
+        else return b - (-(*this));
+    }
+    else if (right._is_negative) return left - (-right);
+    int carry = 0; // флаг переноса из предыдущего разряда
+    for (size_t i = 0; i < std::max(left._digits.size(), right._digits.size()) || carry != 0; ++i) {
+        if (i == left._digits.size()) left._digits.push_back(0);
+        left._digits[i] += carry + (i < right._digits.size() ? right._digits[i] : 0);
+        carry = left._digits[i] >= big_integer::BASE;
+        if (carry != 0) left._digits[i] -= big_integer::BASE;
+    }
+
+    return left;
+}
 
 int IntHuge::operator==(const IntHuge& b) const {
     if ((size != b.size) || (sign != b.sign))
