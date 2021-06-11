@@ -1,5 +1,4 @@
-﻿
-#include "IntHuge.h"
+﻿#include "IntHuge.h"
 #include <iostream>
 #include <string.h>
 
@@ -136,9 +135,9 @@ std::ostream& operator<<(std::ostream& s, const IntHuge& c) {
     return s;
 }
 
-IntHuge& IntHuge::operator= (const IntHuge& b) {
-    ;
-}
+//IntHuge& IntHuge::operator= (const IntHuge& b) {
+//    ;
+//}
 
 //IntHuge IntHuge::operator+ (const IntHuge& b) const {
 //    IntHuge res(*this);
@@ -178,7 +177,7 @@ IntHuge& IntHuge::operator= (const IntHuge& b) {
 /*------------------------------------------------------------------*/
 
 
-int IntHuge::operator==(const IntHuge& b) const {
+int IntHuge::operator ==(const IntHuge& b) const {
     if ((size != b.size) || (sign != b.sign))
         return 0;
     else

@@ -7,6 +7,7 @@ class IntHuge
 {
 private:
     int size;
+    int capacity;
     int* numbers;
     int sign;
 
@@ -25,19 +26,16 @@ public:
     friend std::istream& operator>> (std::istream& s, IntHuge& c);
     friend std::ostream& operator<< (std::ostream& s, const IntHuge& c);
 
-    //IntHuge operator+(const IntHuge&) const;
-    //IntHuge operator-(const IntHuge&) const;
-    //IntHuge operator*(double p) const;
-    //void operator=(const IntHuge& f);
-
-    IntHuge& operator= (const IntHuge& b);
-    IntHuge operator+ (const IntHuge& b) const;
-    IntHuge operator* (const int a) const;
 
     /*----------------------------------------------------------*/
 
-    int operator==(const IntHuge& b) const;
-    int operator<(const IntHuge& v) const;
+    // IntHuge& operator =(const IntHuge& b);
+    // friend const IntHuge operator +(const IntHuge& a, const IntHuge& b);
+
+    /*----------------------------------------------------------*/
+
+    int operator ==(const IntHuge& b) const;
+    int operator <(const IntHuge& b) const;
     friend int operator !=(const IntHuge& a, const IntHuge& b);
     friend int operator <=(const IntHuge& a, const IntHuge& b);
     friend int operator >(const IntHuge& a, const IntHuge& b);
